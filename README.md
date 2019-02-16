@@ -20,5 +20,5 @@ $ cargo +nightly run
 $ export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
 
 # Inspect a bad class file using `javap`
-$ $JAVA_HOME/bin/javap -c -v AllAccessFlags.class
+$ "$JAVA_HOME/bin/javap" -c -v AllAccessFlags.class
 ```
