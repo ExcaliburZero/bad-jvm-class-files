@@ -1,6 +1,5 @@
 extern crate jvm_class_file_parser;
 
-use std::env;
 use std::fs::File;
 
 use jvm_class_file_parser::{
@@ -8,17 +7,23 @@ use jvm_class_file_parser::{
 };
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let bad_class_files = vec![
+        ("AllAccessFlags.class", all_access_flags()),
+    ];
 
-    let filepath = &args[1];
-
-    create_class_file(filepath);
+    for (filepath, ref class_file) in bad_class_files {
+        create_class_file(filepath, class_file);
+    }
 }
 
-fn create_class_file(filepath: &str) {
+fn create_class_file(filepath: &str, class_file: &ClassFile) {
     let mut file = File::create(filepath).unwrap();
 
-    let class_file = ClassFile {
+    class_file.to_file(&mut file).unwrap();
+}
+
+fn all_access_flags() -> ClassFile {
+    ClassFile {
         minor_version: 0,
         major_version: 52,
         constant_pool: vec![
@@ -43,7 +48,7 @@ fn create_class_file(filepath: &str) {
                 descriptor_index: 5,
             }),
             Box::new(ConstantPoolEntry::ConstantUtf8 {
-                string: "BadClazz".to_string(),
+                string: "AllAccessFlags".to_string(),
             }),
             Box::new(ConstantPoolEntry::ConstantUtf8 {
                 string: "java/lang/Object".to_string(),
@@ -63,8 +68,5 @@ fn create_class_file(filepath: &str) {
         fields: vec![],
         methods: vec![],
         attributes: vec![],
-    };
-
-    class_file.to_file(&mut file).unwrap();
+    }
 }
-
